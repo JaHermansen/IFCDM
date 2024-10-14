@@ -137,6 +137,101 @@ const leftPanel = BUI.Component.create(() => {
   `;
 });
 
+
+
+//Test clipper
+const casters = components.get(OBC.Raycasters);
+casters.get(world);
+
+const clipper = components.get(OBC.Clipper);
+
+clipper.enabled = true;
+
+container.ondblclick = () => {
+  if (clipper.enabled) {
+    clipper.create(world);
+  }
+};
+
+window.onkeydown = (event) => {
+  if (event.code === "Delete" || event.code === "Backspace") {
+    if (clipper.enabled) {
+      clipper.delete(world);
+    }
+  }
+};
+
+
+const panel = BUI.Component.create<BUI.PanelSection>(() => {
+  return BUI.html`
+    <bim-panel label="Clipper Tutorial" class="options-menu">
+          <bim-panel-section collapsed label="Commands">
+      
+        <bim-label>Double click: Create clipping plane</bim-label>
+        <bim-label>Delete key: Delete clipping plane</bim-label>
+       
+        
+      </bim-panel-section>
+      <bim-panel-section collapsed label="Others"">
+          
+        <bim-checkbox label="Clipper enabled" checked 
+          @change="${({ target }: { target: BUI.Checkbox }) => {
+            clipper.config.enabled = target.value;
+          }}">
+        </bim-checkbox>
+        
+        <bim-checkbox label="Clipper visible" checked 
+          @change="${({ target }: { target: BUI.Checkbox }) => {
+            clipper.config.visible = target.value;
+          }}">
+        </bim-checkbox>
+      
+        <bim-color-input 
+          label="Planes Color" color="#202932" 
+          @input="${({ target }: { target: BUI.ColorInput }) => {
+            clipper.config.color = new THREE.Color(target.color);
+          }}">
+        </bim-color-input>
+        
+        <bim-number-input 
+          slider step="0.01" label="Planes opacity" value="0.2" min="0.1" max="1"
+          @change="${({ target }: { target: BUI.NumberInput }) => {
+            clipper.config.opacity = target.value;
+          }}">
+        </bim-number-input>
+        
+        <bim-number-input 
+          slider step="0.1" label="Planes size" value="5" min="2" max="10"
+          @change="${({ target }: { target: BUI.NumberInput }) => {
+            clipper.config.size = target.value;
+          }}">
+        </bim-number-input>
+        
+        <bim-button 
+          label="Delete all" 
+          @click="${() => {
+            clipper.deleteAll();
+          }}">  
+        </bim-button>        
+        
+        <bim-button 
+          label="Rotate cube" 
+          @click="${() => {
+            cube.rotation.x = 2 * Math.PI * Math.random();
+            cube.rotation.y = 2 * Math.PI * Math.random();
+            cube.rotation.z = 2 * Math.PI * Math.random();
+          }}">  
+        </bim-button>
+       
+        
+      </bim-panel-section>
+    </bim-panel>
+    `;
+});
+
+document.body.append(panel);
+
+// test clipper end
 const app = document.getElementById("app") as BUI.Grid;
 app.layouts = {
   main: {
