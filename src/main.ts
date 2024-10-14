@@ -147,7 +147,7 @@ const clipper = components.get(OBC.Clipper);
 
 clipper.enabled = true;
 
-container.ondblclick = () => {
+world.ondblclick = () => {
   if (clipper.enabled) {
     clipper.create(world);
   }
