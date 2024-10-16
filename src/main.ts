@@ -3,10 +3,10 @@ import * as OBC from "@thatopen/components";
 import * as OBF from "@thatopen/components-front";
 import * as BUI from "@thatopen/ui";
 import projectInformation from "./components/Panels/ProjectInformation";
+import projectClassifier from "./components/Panels/ProjectClassifier";
 import elementData from "./components/Panels/Selection";
 import settings from "./components/Panels/Settings";
 import load from "./components/Toolbars/Sections/Import";
-import help from "./components/Panels/Help";
 import camera from "./components/Toolbars/Sections/Camera";
 import selection from "./components/Toolbars/Sections/Selection";
 import { AppManager } from "./bim-components";
@@ -45,6 +45,8 @@ worldGrid.material.uniforms.uColor.value = new THREE.Color(0x424242);
 worldGrid.material.uniforms.uSize1.value = 2;
 worldGrid.material.uniforms.uSize2.value = 8;
 
+
+
 const resizeWorld = () => {
   world.renderer?.resize();
   world.camera.updateAspect();
@@ -74,24 +76,24 @@ await ifcLoader.setup();
 const tilesLoader = components.get(OBF.IfcStreamer);
 tilesLoader.url = "../resources/tiles/";
 tilesLoader.world = world;
-// tilesLoader.culler.threshold = 0.001;
-//tilesLoader.culler.maxHiddenTime = 1000;
-//tilesLoader.culler.maxLostTime = 40000;
 
 const highlighter = components.get(OBF.Highlighter);
 highlighter.setup({ world });
 highlighter.zoomToSelection = true;
+highlighter.config.autoHighlightOnClick = true;
+highlighter.config.hoverEnabled = false;
 
-//const culler = components.get(OBC.Cullers).create(world);
-//culler.threshold = 0.001;
-
-world.camera.controls.restThreshold = 0.25;
+world.camera.controls.restThreshold = 0.25; 
 world.camera.controls.addEventListener("rest", () => {
   //culler.needsUpdate = true;
   //tilesLoader.culler.needsUpdate = true;
 });
 
+let loadedModel: any = null;
+
 fragments.onFragmentsLoaded.add(async (model) => {
+  loadedModel = model;
+
   if (model.hasProperties) {
     await indexer.process(model);
     classifier.byEntity(model);
@@ -99,7 +101,6 @@ fragments.onFragmentsLoaded.add(async (model) => {
 
   for (const fragment of model.items) {
     world.meshes.add(fragment.mesh);
-    //culler.add(fragment.mesh);
   }
 
   world.scene.three.add(model);
@@ -109,6 +110,7 @@ fragments.onFragmentsLoaded.add(async (model) => {
 });
 
 const projectInformationPanel = projectInformation(components);
+const projectClassifierPanel = projectClassifier(components);
 const elementDataPanel = elementData(components);
 
 const toolbar = BUI.Component.create(() => {
@@ -127,18 +129,15 @@ const leftPanel = BUI.Component.create(() => {
       <bim-tab name="project" label="Project" icon="ph:building-fill">
         ${projectInformationPanel}
       </bim-tab>
+      <bim-tab name="classifier" label="Classifier" icon="material-symbols:help">
+        ${projectClassifierPanel}
+      </bim-tab>
       <bim-tab name="settings" label="Settings" icon="solar:settings-bold">
         ${settings(components)}
-      </bim-tab>
-      <bim-tab name="help" label="Help" icon="material-symbols:help">
-        ${help}
       </bim-tab>
     </bim-tabs> 
   `;
 });
-
-
-
 
 const app = document.getElementById("app") as BUI.Grid;
 app.layouts = {
@@ -179,3 +178,5 @@ viewportGrid.layouts = {
 };
 
 viewportGrid.layout = "main";
+
+export const getLoadedModel = () => loadedModel;
