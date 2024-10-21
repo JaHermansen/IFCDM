@@ -68,6 +68,30 @@ export default (components: OBC.Components) => {
 
   const loader = components.get(OBF.IfcStreamer);
 
+
+async function download(file: File) {
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(file);
+    link.download = file.name;
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+}
+
+async function exportFragments() {
+    if (!fragments.groups.size) {
+        return;
+    }
+    const group = Array.from(fragments.groups.values())[0];
+    const data = fragments.export(group);
+    download(new File([new Blob([data])], "geometry.frag"));
+
+    const properties = group.getLocalProperties();
+    if (properties) {
+        download(new File([JSON.stringify(properties)], "geometry.json"));
+    }
+}
+
   // WIP!!
   async function loadTiles() {
     const input = document.createElement("input");
@@ -116,13 +140,16 @@ export default (components: OBC.Components) => {
     input.click();
   }
 
+
   return BUI.Component.create<BUI.PanelSection>(() => {
     return BUI.html`
       <bim-toolbar-section label="Import" icon="solar:import-bold">
         ${loadBtn}
         <bim-button @click=${loadFragments} label="Fragments" icon="fluent:puzzle-cube-piece-20-filled" tooltip-title="Load Fragments"
           tooltip-text="Loads a pre-converted IFC from a Fragments file. Use this option if you want to avoid the conversion from IFC to Fragments."></bim-button>
-        <!-- <bim-button @click=${loadTiles} label="Tiles" icon="fe:tiled" tooltip-title="Load BIM Tiles"
+        <bim-button label="Export fragments" @click="${() => { exportFragments(); }} label="Fragments" icon="fluent:puzzle-cube-piece-20-filled" tooltip-title="Load Fragments"
+        tooltip-text="Loads a pre-converted IFC from a Fragments file. Use this option if you want to avoid the conversion from IFC to Fragments."></bim-button> 
+          <!-- <bim-button @click=${loadTiles} label="Tiles" icon="fe:tiled" tooltip-title="Load BIM Tiles"
         tooltip-text="Loads a pre-converted IFC from a Tiles file to stream the model. Perfect for big models."></bim-button> -->
       </bim-toolbar-section>
     `;

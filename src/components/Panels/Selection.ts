@@ -47,7 +47,7 @@ export default (components: OBC.Components) => {
           <div style="display: flex; gap: 0.375rem;">
             <bim-text-input @input=${search} vertical placeholder="Search..." debounce="200"></bim-text-input>
             <bim-button style="flex: 0;" @click=${toggleExpanded} icon="eva:expand-fill"></bim-button>
-            <bim-button style="flex: 0;" @click=${() => propsTable.downloadData("ElementData", "tsv")} icon="ph:export-fill" tooltip-title="Export Data" tooltip-text="Export the shown properties to TSV."></bim-button>
+            <bim-button style="flex: 0;" @click=${() => propsTable.downloadData("ElementData", "csv")} icon="ph:export-fill" tooltip-title="Export Data" tooltip-text="Export the shown properties to TSV."></bim-button>
           </div>
           ${propsTable}
         </bim-panel-section>

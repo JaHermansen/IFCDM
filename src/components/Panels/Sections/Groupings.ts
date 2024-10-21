@@ -4,7 +4,7 @@ import * as BUI from "@thatopen/ui";
 import customSelections from "../../Tables/CustomSelections";
 
 export default (components: OBC.Components) => {
-  const [customSelectionsTable, updateCustomSelections] = customSelections({
+  const [customSelectionsTable] = customSelections({
     components,
   });
   const highlighter = components.get(OBF.Highlighter);
@@ -40,16 +40,16 @@ export default (components: OBC.Components) => {
     });
   };
 
-  const onSaveGroupSelection = async () => {
-    if (!(groupNameInput && groupNameInput.value.trim() !== "")) return;
-    newSelectionForm.style.display = "none";
-    saveSelectionBtn.style.display = "none";
-    const classifier = components.get(OBC.Classifier);
-    classifier.list.CustomSelections[groupNameInput.value] =
-      highlighter.selection.select;
-    updateCustomSelections();
-    groupNameInput.value = "";
-  };
+  //const onSaveGroupSelection = async () => {
+  //  if (!(groupNameInput && groupNameInput.value.trim() !== "")) return;
+  //  newSelectionForm.style.display = "none";
+  //  saveSelectionBtn.style.display = "none";
+  //  const classifier = components.get(OBC.Classifier);
+  //  classifier.list.CustomSelections[groupNameInput.value] =
+  //    highlighter.selection.select;
+  //  updateCustomSelections();
+  //  groupNameInput.value = "";
+  //};
 
   const onNewSelection = () => {
     const selectionLength = Object.keys(highlighter.selection.select).length;
@@ -63,12 +63,13 @@ export default (components: OBC.Components) => {
     groupNameInput.value = "";
   };
 
+    //<bim-button @click=${onSaveGroupSelection} icon="mingcute:check-fill" style="flex: 0" label="Accept"></bim-button>
   return BUI.Component.create<BUI.PanelSection>(() => {
     return BUI.html`
       <bim-panel-section label="Custom Selections" icon="clarity:blocks-group-solid">
         <div ${BUI.ref(onFormCreated)} style="display: none; gap: 0.5rem">
           <bim-text-input ${BUI.ref(onGroupNameInputCreated)} placeholder="Selection Name..." vertical></bim-text-input>
-          <bim-button @click=${onSaveGroupSelection} icon="mingcute:check-fill" style="flex: 0" label="Accept"></bim-button>
+          
           <bim-button @click=${onCancelGroupCreation} icon="mingcute:close-fill" style="flex: 0" label="Cancel"></bim-button>
         </div>
         ${customSelectionsTable}

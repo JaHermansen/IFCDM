@@ -1,6 +1,7 @@
 import * as OBC from "@thatopen/components";
 import * as OBF from "@thatopen/components-front";
 import * as BUI from "@thatopen/ui";
+import * as FRAGS from "@thatopen/fragments";
 
 export default (components: OBC.Components, world?: OBC.World) => {
     const highlighter = components.get(OBF.Highlighter);
@@ -38,7 +39,7 @@ export default (components: OBC.Components, world?: OBC.World) => {
             }
         }
         // Convert selection to FragmentIdMap
-        const fragmentIdMap: OBC.FragmentIdMap = {};
+        const fragmentIdMap: FRAGS.FragmentIdMap = {};
         for (const fragmentID in selection) {
             fragmentIdMap[fragmentID] = new Set(selection[fragmentID]);
         }
